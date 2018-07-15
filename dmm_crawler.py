@@ -19,8 +19,9 @@ def get_soup(url):
     soup = BeautifulSoup(resp.text, 'html5lib')
     return soup
 
-
+#Return poplular work names, and download cover image and sample image
 def get_pop_works(soup):
+    titles = []
     works = soup.find_all('div', 'd-modtmb')
     for work in works:
         w_url = DMM_URL + work.a['href'].split('/digital/videoc/')[-1]
@@ -29,6 +30,7 @@ def get_pop_works(soup):
 
         #Get title
         title = w_soup.find('h1', {'id': 'title'}).text
+        titles.append(title)
         print('Title: {}'.format(title))
 
         #Get cover img
@@ -40,6 +42,8 @@ def get_pop_works(soup):
         for s_img_url in sample_img_url: get_img(s_img_url)
 
         break
+    
+    return title
 
 
 def get_img(img_url):
