@@ -24,17 +24,19 @@ def get_pop_works(soup):
     works = soup.find_all('div', 'd-modtmb')
     for work in works:
         w_url = DMM_URL + work.a['href'].split('/digital/videoc/')[-1]
-        print(w_url)
+        print('Work url: {}'.format(w_url))
         w_soup = get_soup(w_url)
+
+        #Get title
+        title = w_soup.find('h1', {'id': 'title'}).text
+        print('Title: {}'.format(title))
 
         #Get cover img
         cover_img_url = w_soup.find('img', {'class': 'tdmm'})['src']
-        print(cover_img_url)
-        #get_img(cover_img_url)
+        get_img(cover_img_url)
 
         #Get sample img
         sample_img_url = [ u['src'] for u in w_soup.find_all('img', {'class': 'mg-b6'})]
-        print(sample_img_url)
         for s_img_url in sample_img_url: get_img(s_img_url)
 
         break
