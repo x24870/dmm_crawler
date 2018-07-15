@@ -1,6 +1,7 @@
 import requests, os
 from bs4 import BeautifulSoup
 
+DMM_URL = 'http://www.dmm.co.jp/digital/videoc/'
 CHUNK_SIZE = 1000000
 PIC_DIR = 'pics'
 
@@ -21,14 +22,22 @@ def get_soup(url):
 
 def get_pop_works(soup):
     works = soup.find_all('div', 'd-modtmb')
-    print(works)
-    #TODO get href and move to the page -> craw data
-"""     for work in works:
-        print(work.a['href'])
-        w_soup = get_soup(work.a['href'])
-        img_url = soup.find('img', {'class': 'tdmm'})
-        print(img_url)
-        break """
+    for work in works:
+        w_url = DMM_URL + work.a['href'].split('/digital/videoc/')[-1]
+        print(w_url)
+        w_soup = get_soup(w_url)
+
+        #Get cover img
+        cover_img_url = w_soup.find('img', {'class': 'tdmm'})['src']
+        print(cover_img_url)
+        #get_img(cover_img_url)
+
+        #Get sample img
+        sample_img_url = [ u['src'] for u in w_soup.find_all('img', {'class': 'mg-b6'})]
+        print(sample_img_url)
+        for s_img_url in sample_img_url: get_img(s_img_url)
+
+        break
 
 
 def get_img(img_url):
@@ -44,8 +53,7 @@ def get_img(img_url):
             f.write(chunck)
 
 def test():
-    url = 'http://www.dmm.co.jp/digital/videoc/'
-    soup = get_soup(url)
+    soup = get_soup(DMM_URL)
     get_pop_works(soup)
 
 
