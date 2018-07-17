@@ -29,7 +29,8 @@ def get_pop_works(soup):
         w_soup = get_soup(w_url)
 
         #Get title
-        title = w_soup.find('h1', {'id': 'title'}).text
+        #title = w_soup.find('h1', {'id': 'title'}).text
+        title = os.path.basename(os.path.dirname(w_soup.find('img', {'class': 'tdmm'})['src']))
         titles.append(title)
         print('Title: {}'.format(title))
         work_dir = os.path.join(PIC_DIR, title)
