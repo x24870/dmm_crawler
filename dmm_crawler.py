@@ -32,28 +32,31 @@ def get_pop_works(soup):
         title = w_soup.find('h1', {'id': 'title'}).text
         titles.append(title)
         print('Title: {}'.format(title))
+        work_dir = os.path.join(PIC_DIR, title)
 
         #Get cover img
         cover_img_url = w_soup.find('img', {'class': 'tdmm'})['src']
-        get_img(cover_img_url)
+        cover_dir = os.path.join(work_dir, 'cover')
+        get_img(cover_img_url, cover_dir)
 
         #Get sample img
         sample_img_url = [ u['src'] for u in w_soup.find_all('img', {'class': 'mg-b6'})]
-        for s_img_url in sample_img_url: get_img(s_img_url)
+        sample_dir = os.path.join(work_dir, 'sample')
+        for s_img_url in sample_img_url: get_img(s_img_url, sample_dir)
 
         break
     
     return title
 
 
-def get_img(img_url):
-    os.makedirs(PIC_DIR, exist_ok=True)
+def get_img(img_url, folder_dir):
+    os.makedirs(folder_dir, exist_ok=True)
 
     resp = requests.get(img_url)
     resp.raise_for_status()
 
     file_name = os.path.basename(img_url)
-    with open(os.path.join(PIC_DIR, file_name), 'wb') as f:
+    with open(os.path.join(folder_dir, file_name), 'wb') as f:
         print("Saving img '{}' ...".format(file_name))
         for chunck in resp.iter_content(CHUNK_SIZE):
             f.write(chunck)
