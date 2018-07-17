@@ -1,4 +1,5 @@
-import openpyxl
+import openpyxl, os
+import dmm_crawler
 
 CELL_SIZE = 50
 
@@ -15,22 +16,32 @@ def create_header(wb):
     sheet.cell(1, 3).font = t_font
     
     #Adjust cell size
-    sheet.column_dimensions['C'].width = CELL_SIZE
-    sheet.column_dimensions['C'].height = CELL_SIZE
+    sheet.column_dimensions['B'].width = 10
 
-def insert_title(titles, wb):
-    sheet = wb.active
-
-    for idx, titles in enumerate(titles):
-        sheet.cell(idx+2, 1).value = titles
-
-def insert_cover_img(wb, img_name, work_num):
+def insert_img(wb, img_name, row_idx, col_idx):
     sheet = wb.active
     img = openpyxl.drawing.image.Image(img_name)
-    sheet.add_image(img, 'C'+work_num+2)
-
+    sheet.add_image(img, openpyxl.utils.get_column_letter(col_idx)+str(row_idx))
     img.width = CELL_SIZE
     img.height = CELL_SIZE
+    sheet.row_dimensions[row_idx].height = 50
+
+def insert_title(wb, work_name, idx):
+    sheet = wb.active
+    sheet.cell(idx+2, 1).value = work_name
+
+def insert_cover_img(wb, work_name, idx):
+    img_dir = os.path.join(os.path.join(dmm_crawler.PIC_DIR, work_name), 'cover')
+    img_name = os.path.join(img_dir, os.listdir(img_dir)[0])
+    insert_img(wb, img_name, idx+2, 2)
+
+def insert_sample_img(wb, work_name, idx):
+    img_dir = os.path.join(os.path.join(dmm_crawler.PIC_DIR, work_name), 'sample')
+    img_names = os.listdir(img_dir)
+
+    for img_idx, img_name in enumerate(img_names):
+        name = os.path.join(img_dir, img_name)
+        insert_img(wb, name, idx+2, img_idx+3)
     
 
 def test():
@@ -38,10 +49,11 @@ def test():
 
     create_header(wb)
 
-    titles = ['aa', 'bb', 'cc']
-    insert_title(titles, wb)
+    #titles = ['aa', 'bb', 'cc']
 
-    insert_img(wb)
+    insert_title(wb, 'hamenets102', 0)
+    insert_cover_img(wb, 'hamenets102', 0)
+    insert_sample_img(wb, 'hamenets102', 0)
 
     wb.save('sheet.xlsx')
 
