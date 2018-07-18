@@ -49,11 +49,15 @@ def test():
 
     create_header(wb)
 
-    #titles = ['aa', 'bb', 'cc']
+    works = os.listdir(dmm_crawler.PIC_DIR)
+    for idx, work in enumerate(works):
+        insert_title(wb, work, idx)
+        insert_cover_img(wb, work, idx)
+        insert_sample_img(wb, work, idx)
 
-    insert_title(wb, 'hamenets102', 0)
-    insert_cover_img(wb, 'hamenets102', 0)
-    insert_sample_img(wb, 'hamenets102', 0)
+    #insert_title(wb, 'hamenets102', 0)
+    #insert_cover_img(wb, 'hamenets102', 0)
+    #insert_sample_img(wb, 'hamenets102', 0)
 
     wb.save('sheet.xlsx')
 
